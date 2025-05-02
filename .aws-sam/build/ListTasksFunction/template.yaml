@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless To-Do App
+
+Resources:
+  AddTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: add_task.lambda_handler
+      Runtime: python3.13
+      Events:
+        AddTaskAPI:
+          Type: Api
+          Properties:
+            Path: /add-task
+            Method: post
+      Policies:
+        - AmazonDynamoDBFullAccess
+
+  DeleteTaskFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: delete_task.lambda_handler
+      Runtime: python3.13
+      Events:
+        DeleteTaskAPI:
+          Type: Api
+          Properties:
+            Path: /delete-task
+            Method: post
+      Policies:
+        - AmazonDynamoDBFullAccess
+
+  ListTasksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: list_tasks.lambda_handler
+      Runtime: python3.13
+      Events:
+        ListTasksAPI:
+          Type: Api
+          Properties:
+            Path: /list-tasks
+            Method: get
+      Policies:
+        - AmazonDynamoDBReadOnlyAccess
+
+  TasksTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Tasks
+      AttributeDefinitions:
+        - AttributeName: TaskID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: TaskID
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+
+
+
+
+
+
+
+
+
