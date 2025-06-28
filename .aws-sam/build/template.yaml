@@ -53,7 +53,7 @@ Resources:
   TasksTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: Tasks
+      TableName: Tasks3
       AttributeDefinitions:
       - AttributeName: TaskID
         AttributeType: S
@@ -61,3 +61,8 @@ Resources:
       - AttributeName: TaskID
         KeyType: HASH
       BillingMode: PAY_PER_REQUEST
+Outputs:
+  ApiUrl:
+    Description: Base URL of your API Gateway
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
