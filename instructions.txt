@@ -1,0 +1,118 @@
+Title: Serverless To-Do App with CI/CD using AWS
+
+🔧 Prerequisites
+
+AWS Account (Free Tier enabled)
+
+S3 Bucket created (for Lambda packaging)
+
+AWS CLI configured (aws configure)
+
+AWS SAM CLI installed
+
+GitHub account (or CodeCommit)
+
+Node.js & Python installed
+
+📁 Folder Structure
+
+serverless-todo-app/
+│
+├── add_task.py # Lambda function for adding tasks
+├── delete_task.py # Lambda function for deleting tasks
+├── list_tasks.py # Lambda function for listing tasks
+├── template.yaml # SAM template for infrastructure
+├── buildspec.yml # CodeBuild instructions
+├── requirements.txt # Python dependencies (optional)
+└── README.md # Project description
+
+🛠️ Steps to Deploy Using AWS SAM
+
+Install dependencies (if any):
+pip install boto3
+
+Build the project:
+sam build
+
+Package Lambda code:
+sam package
+--output-template-file packaged.yaml
+--s3-bucket YOUR_S3_BUCKET_NAME
+
+Deploy using SAM:
+sam deploy
+--template-file packaged.yaml
+--stack-name serverless-todo-stack
+--capabilities CAPABILITY_IAM
+--region YOUR_AWS_REGION
+
+🌐 API Gateway Setup
+
+After deployment:
+
+Go to AWS Console → API Gateway
+
+Find your deployed API
+
+Under Stages → Create a new stage named Prod
+
+Deploy the API to the Prod stage
+
+✅ Final Base URL:
+https://<your-api-id>.execute-api.<region>.amazonaws.com/Prod
+
+🌐 API Endpoints (Example)
+
+Add Task
+POST /Prod/add-task
+curl:
+curl -X POST https://<your-api>/Prod/add-task
+-H "Content-Type: application/json"
+-d '{"TaskID": "task-123", "Title": "Complete homework", "Description": "Finish math and science assignments"}'
+
+Delete Task
+POST /Prod/delete-task
+curl:
+curl -X POST https://<your-api>/Prod/delete-task
+-H "Content-Type: application/json"
+-d '{"TaskID": "task-123"}'
+
+List Tasks
+GET /Prod/list-tasks
+curl:
+curl https://<your-api>/Prod/list-tasks
+
+🧪 Testing Tips
+
+Use curl (above) or Postman to test your API endpoints
+
+Ensure DynamoDB table named Tasks exists with primary key TaskID
+
+IAM Role for Lambda must have AmazonDynamoDBFullAccess
+
+🔁 Setting Up CI/CD (Optional)
+
+Push project to GitHub
+
+Go to AWS CodePipeline → Create pipeline
+
+Source: GitHub repo
+
+Build: Use CodeBuild with buildspec.yml
+
+Deploy: Use CloudFormation with packaged.yaml
+
+✅ Result:
+Any commit to GitHub triggers automatic deploy via CodePipeline.
+
+📦 IAM Role Notes
+
+Ensure CodeBuild role includes these permissions:
+
+s3:PutObject
+
+cloudformation:*
+
+lambda:*
+
+dynamodb:*
